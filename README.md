@@ -15,4 +15,4 @@ pip install scikit-learn
 
 ## What is coming next
 
-I will constantly update the code and add new algorithms. First part will consist of changing the look of the GUI and positioning and naming of widgets. When I am done with this part I will add screenshots section in readme.md and provide viewers with step by step on how to use my application. In the second party I will constantly add new algorithms for example KNN, support vector machines, polynomial regression, decission trees and so on.
+I will constantly update the code and add new algorithms. First part will consist of changing the look of the GUI and positioning and naming of widgets. When I am done with this part I will add screenshots section in readme.md and provide viewers with step by step on how to use my application. In the second part I will constantly add new algorithms for example KNN, support vector machines, polynomial regression, decission trees and so on.
