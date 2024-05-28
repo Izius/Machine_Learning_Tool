@@ -4,7 +4,7 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression, LogisticRegression
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from PIL import Image, ImageTk
@@ -25,8 +25,8 @@ class Machine_Learning_Tool(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Linear_Regression, Logistic_Classification, Linear_Regression_Output,
-                  Logistic_Classification_Output):
+        for F in (StartPage, Linear_Regression, Logistic_Classification, Polynomial_Regression, Linear_Regression_Output,
+                  Logistic_Classification_Output, Polynomial_Regression_Output):
 
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -49,6 +49,9 @@ class Machine_Learning_Tool(tk.Tk):
 
             frame.set_output(*args)
 
+        elif page_name == "Polynomial_Regression_Output":
+
+                frame.set_output(*args)
 
     def set_file_path(self, file_path):
 
@@ -74,6 +77,10 @@ class StartPage(ttk.Frame):
                              command=lambda: controller.show_frame("Logistic_Classification"))
         button2.pack()
 
+        button3 = ttk.Button(self, text="Go to Polynomial Regression",
+                             command=lambda: controller.show_frame("Polynomial_Regression"))
+        button3.pack()
+
         file_button = ttk.Button(self, text="Select File", command=self.select_file)
         file_button.pack()
 
@@ -83,7 +90,7 @@ class StartPage(ttk.Frame):
         im1 = Image.open('images/ml.png')
         newsize = (500, 300)
         im1 = im1.resize(newsize)
-        self.iim1 = ImageTk.PhotoImage(im1)  # Keeping a reference to the PhotoImage
+        self.iim1 = ImageTk.PhotoImage(im1)
         image_label = tk.Label(self, image=self.iim1)
         image_label.pack(pady=100)
 
@@ -195,6 +202,58 @@ class Logistic_Classification(ttk.Frame):
             self.controller.show_frame("Logistic_Classification_Output", log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_)
 
 
+class Polynomial_Regression(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        super().__init__(parent, style="Frame.TFrame")
+        self.controller = controller
+
+        label1 = ttk.Label(self, text="Polynomial regression", background="lightblue")
+        label1.pack(side="top", fill="x", pady=20)
+        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: controller.show_frame("StartPage"))
+        button1.pack(side='top', pady=10)
+
+        label2 = ttk.Label(self, text="Enter test size:", background="lightblue")
+        label2.pack()
+
+        test_size_text = tk.Text(self, height=1, width=10)
+        test_size_text.pack(pady=5)
+
+        degree_label = ttk.Label(self, text="Enter the order of the polynomial:", background="lightblue")
+        degree_label.pack()
+
+        degree_text = tk.Text(self, height=1, width=10)
+        degree_text.pack(pady=5)
+
+        button2 = ttk.Button(self, text="Fit!", command=lambda: self.fit_polynomial_regression(test_size=test_size_text.get("1.0", "end-1c"),
+                             degree=degree_text.get("1.0", "end-1c")))
+        button2.pack(pady=10)
+
+    def fit_polynomial_regression(self, test_size=0.3, degree=2):
+        file_path = self.controller.file_path
+        if file_path:
+            data = pd.read_csv(file_path)
+            X = data.iloc[:, :-1]
+            y = data.iloc[:, -1]
+
+            polynomial_converter = PolynomialFeatures(degree=int(degree), include_bias=False)
+            poly_features = polynomial_converter.fit_transform(X)
+
+            X_train, X_test, y_train, y_test = train_test_split(poly_features, y, test_size=float(test_size))
+
+            model = LinearRegression()
+            model.fit(X_train, y_train)
+
+            y_pred = model.predict(X_test)
+
+            intercept = model.intercept_
+            coefficients = model.coef_
+
+            mae = mean_absolute_error(y_test, y_pred)
+            root = np.sqrt(mean_squared_error(y_test, y_pred))
+
+            self.controller.show_frame("Polynomial_Regression_Output", intercept, coefficients, mae, root, degree)
+
 class Linear_Regression_Output(ttk.Frame):
     def __init__(self, parent, controller):
 
@@ -274,6 +333,47 @@ class Logistic_Classification_Output(ttk.Frame):
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
         button1.pack()
 
+
+class Polynomial_Regression_Output(ttk.Frame):
+    def __init__(self, parent, controller):
+
+        super().__init__(parent, style="Frame.TFrame")
+        self.controller = controller
+
+        label = ttk.Label(self, text="Polynomial Regression Output", background="lightblue")
+        label.pack(side="top", fill="x", pady=10)
+
+        self.intercept_label = ttk.Label(self, text="")
+        self.intercept_label.pack()
+
+        self.mae_label = ttk.Label(self, text="")
+        self.mae_label.pack()
+
+        self.root_label = ttk.Label(self, text="")
+        self.root_label.pack()
+
+        self.coefficient_labels = []
+
+    def set_output(self, intercepts, coefficients, mae, root, degree):
+
+        i = 1
+        j = 0
+        for coef in coefficients:
+
+            if j == int(degree)+1:
+                j = 0
+                i += 1
+
+            label1 = ttk.Label(self, text=f"Coeficient {i}{j}: {coef}", background="lightblue")
+            label1.pack()
+            self.coefficient_labels.append(label1)
+            j += 1
+
+        self.mae_label.config(text=f'Mean Absolute Error: {mae}', background="lightblue")
+        self.root_label.config(text=f'Root Mean Squared Error: {root}', background="lightblue")
+
+        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1.pack()
 
 
 
