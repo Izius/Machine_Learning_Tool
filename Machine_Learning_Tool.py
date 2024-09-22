@@ -335,15 +335,15 @@ class Linear_Regression_Output(ttk.Frame):
 
     def set_output(self, lin_intercept, lin_coefficients, mae, root):
 
-        self.intercept_label.config(text=f'Intercept: {lin_intercept}')
+        self.intercept_label.config(text=f'Intercept: {round(lin_intercept, 2)}')
 
         for i, coef in enumerate(lin_coefficients):
-            label = ttk.Label(self, text=f"Coefficient {i + 1}: {coef}", background="lightblue")
+            label = ttk.Label(self, text=f"Coefficient {i + 1}: {round(coef, 2)}", background="lightblue")
             label.pack()
             self.coefficient_labels.append(label)
 
-        self.mae_label.config(text=f'Mean Absolute Error: {mae}')
-        self.root_label.config(text=f'Root Mean Squared Error: {root}')
+        self.mae_label.config(text=f'Mean Absolute Error: {round(mae, 2)}')
+        self.root_label.config(text=f'Root Mean Squared Error: {round(root, 2)}')
 
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
         button1.pack()
@@ -365,26 +365,26 @@ class Logistic_Classification_Output(ttk.Frame):
     def set_output(self, log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_):
 
         for i in range(len(log_intercept)):
-            log_intercept[i] = str(log_intercept[i])
+            log_intercept[i] = str(round(log_intercept[i], 2))
 
         self.intercept_label.config(text=f'Intercept: '+', '.join(log_intercept), background="lightblue")
 
         for i, coef in enumerate(log_coefficients):
 
-            label1 = ttk.Label(self, text=f"Coefficient {i + 1}: {coef}", background="lightblue")
+            label1 = ttk.Label(self, text=f"Coefficient {i + 1}: {round(coef, 2)}", background="lightblue")
             label1.pack()
             self.coefficient_labels.append(label1)
 
-        label2 = ttk.Label(self, text=f"Accuracy Score: {accuracy_score_}", background="lightblue")
+        label2 = ttk.Label(self, text=f"Accuracy Score: {round(accuracy_score_, 2)}", background="lightblue")
         label2.pack()
 
-        label3 = ttk.Label(self, text=f"Precision Score: {precision_score_}", background="lightblue")
+        label3 = ttk.Label(self, text=f"Precision Score: {round(precision_score_, 2)}", background="lightblue")
         label3.pack()
 
-        label4 = ttk.Label(self, text=f"Recall Score: {recall_score_}", background="lightblue")
+        label4 = ttk.Label(self, text=f"Recall Score: {round(recall_score_, 2)}", background="lightblue")
         label4.pack()
 
-        label5 = ttk.Label(self, text=f"F1 Score: {f1_score_}", background="lightblue")
+        label5 = ttk.Label(self, text=f"F1 Score: {round(f1_score_, 2)}", background="lightblue")
         label5.pack()
 
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
@@ -421,13 +421,13 @@ class Polynomial_Regression_Output(ttk.Frame):
                 j = 0
                 i += 1
 
-            label1 = ttk.Label(self, text=f"Coeficient {i}{j}: {coef}", background="lightblue")
+            label1 = ttk.Label(self, text=f"Coeficient {i}{j}: {round(coef, 2)}", background="lightblue")
             label1.pack()
             self.coefficient_labels.append(label1)
             j += 1
 
-        self.mae_label.config(text=f'Mean Absolute Error: {mae}', background="lightblue")
-        self.root_label.config(text=f'Root Mean Squared Error: {root}', background="lightblue")
+        self.mae_label.config(text=f'Mean Absolute Error: {round(mae, 2)}', background="lightblue")
+        self.root_label.config(text=f'Root Mean Squared Error: {round(root, 2)}', background="lightblue")
 
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
         button1.pack()
@@ -455,10 +455,10 @@ class KNNClassification_Output(ttk.Frame):
 
     def set_output(self, accuracy_score_, precision_score_, recall_score_, f1_score_):
 
-        self.accuracy_label.config(text=f'Accuracy Score: {accuracy_score_}', background="lightblue")
-        self.precision_label.config(text=f'Precision Score: {precision_score_}', background="lightblue")
-        self.recall_label.config(text=f'Recall Score: {recall_score_}', background="lightblue")
-        self.f1_label.config(text=f'F1 Score: {f1_score_}', background="lightblue")
+        self.accuracy_label.config(text=f'Accuracy Score: {round(accuracy_score_, 2)}', background="lightblue")
+        self.precision_label.config(text=f'Precision Score: {round(precision_score_, 2)}', background="lightblue")
+        self.recall_label.config(text=f'Recall Score: {round(recall_score_, 2)}', background="lightblue")
+        self.f1_label.config(text=f'F1 Score: {round(f1_score_, 2)}', background="lightblue")
 
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
         button1.pack()
