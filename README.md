@@ -16,4 +16,20 @@ pip install pillow
 
 ## What is coming next
 
-I will constantly update the code and add new algorithms. First part will consist of changing the look of the GUI and positioning and naming of widgets. When I am done with this part I will add screenshots section in readme.md and provide viewers with step by step on how to use my application. In the second part I will constantly add new algorithms for example KNN, support vector machines, polynomial regression, decission trees and so on.
+I will constantly update the code and add new algorithms. Next on my list is implementing a way to export fitting results in a .json or .txt format. I will also constantly add new algorithms for example KNN, support vector machines, decission trees, clustering, principal component analysis and so on. 
+
+## Short guide on how to use the application
+
+First image is showing the start page where you can choose between linear or polynomial regression or logistic classification. You will also need to provide a .csv with your data. Data has to be organized into columns where the last column is your label and all other are your features.
+
+<img src="./images/Start page.png" alt="Alt text" width="500"/>
+
+In the next slide we have for example linear regression page. Only input on this page is the desired train test split, a number between 0 and 1. After that you have to click on the 'Fit!' button and not just press enter or else it won't work.
+
+<img src="./images/Linear regression.png" alt="Alt text" width="500"/>
+
+After the algorithm does its job of splitting, training and fitting the data and also calculating important quantities for us, you will get the back evaluation metrics and coefficients of all features. In the future, the metrics and coefficients will be able to be saved if needed. 
+
+<img src="./images/Output.png" alt="Alt text" width="500"/>
+
+
