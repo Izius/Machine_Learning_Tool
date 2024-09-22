@@ -3,6 +3,7 @@ from tkinter import ttk, filedialog
 import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
@@ -25,8 +26,8 @@ class Machine_Learning_Tool(tk.Tk):
 
         self.frames = {}
 
-        for F in (StartPage, Linear_Regression, Logistic_Classification, Polynomial_Regression, Linear_Regression_Output,
-                  Logistic_Classification_Output, Polynomial_Regression_Output):
+        for F in (StartPage, Linear_Regression, Logistic_Classification, Polynomial_Regression, KNNClassification, Linear_Regression_Output,
+                  Logistic_Classification_Output, Polynomial_Regression_Output, KNNClassification_Output):
 
             page_name = F.__name__
             frame = F(parent=container, controller=self)
@@ -42,15 +43,15 @@ class Machine_Learning_Tool(tk.Tk):
         frame.tkraise()
 
         if page_name == "Linear_Regression_Output":
-
             frame.set_output(*args)
 
         elif page_name == "Logistic_Classification_Output":
-
             frame.set_output(*args)
 
         elif page_name == "Polynomial_Regression_Output":
+            frame.set_output(*args)
 
+        elif page_name == "KNNClassification_Output":
                 frame.set_output(*args)
 
     def set_file_path(self, file_path):
@@ -80,6 +81,10 @@ class StartPage(ttk.Frame):
         button3 = ttk.Button(self, text="Go to Polynomial Regression",
                              command=lambda: controller.show_frame("Polynomial_Regression"))
         button3.pack()
+
+        button4 = ttk.Button(self, text="Go to KNN Classification",
+                             command=lambda: controller.show_frame("KNNClassification"))
+        button4.pack()
 
         file_button = ttk.Button(self, text="Select File", command=self.select_file)
         file_button.pack()
@@ -254,6 +259,58 @@ class Polynomial_Regression(ttk.Frame):
 
             self.controller.show_frame("Polynomial_Regression_Output", intercept, coefficients, mae, root, degree)
 
+class KNNClassification(ttk.Frame):
+    def __init__(self, parent, controller):
+        ttk.Frame.__init__(self, parent)
+        super().__init__(parent, style="Frame.TFrame")
+        self.controller = controller
+
+        label1 = ttk.Label(self, text="KNN classification", background="lightblue")
+        label1.pack(side="top", fill="x", pady=20)
+        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: controller.show_frame("StartPage"))
+        button1.pack(side='top', pady=10)
+
+        label2 = ttk.Label(self, text="Enter test size:", background="lightblue")
+        label2.pack()
+
+        test_size_text = tk.Text(self, height=1, width=10)
+        test_size_text.pack(pady=5)
+
+        label3 = ttk.Label(self, text="Enter number of neighbors:", background="lightblue")
+        label3.pack()
+
+        n_neighbors_text = tk.Text(self, height=1, width=10)
+        n_neighbors_text.pack(pady=5)
+
+        button2 = ttk.Button(self, text="Fit!", command=lambda: self.fit_knn_classification(test_size=test_size_text.get("1.0", "end-1c"),
+                                                                                                 n_neighbors=n_neighbors_text.get("1.0", "end-1c")))
+        button2.pack()
+
+    def fit_knn_classification(self, test_size=0.3, n_neighbors=5):
+        file_path = self.controller.file_path
+        if file_path:
+            data = pd.read_csv(file_path)
+            X = data.iloc[:, :-1]
+            y = data.iloc[:, -1]
+
+            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=float(test_size))
+            scaler = StandardScaler()
+            scaled_X_train = scaler.fit_transform(X_train)
+            scaled_X_test = scaler.transform(X_test)
+
+            model = KNeighborsClassifier(n_neighbors=int(n_neighbors))
+            model.fit(scaled_X_train, y_train)
+
+            y_pred = model.predict(scaled_X_test)
+
+            accuracy_score_ = accuracy_score(y_test, y_pred, normalize=True)
+            precision_score_ = precision_score(y_test, y_pred, average='macro')
+            recall_score_ = recall_score(y_test, y_pred, average='macro')
+            f1_score_ = f1_score(y_test, y_pred, average='macro')
+
+            self.controller.show_frame("KNNClassification_Output", accuracy_score_, precision_score_, recall_score_, f1_score_)
+
+
 class Linear_Regression_Output(ttk.Frame):
     def __init__(self, parent, controller):
 
@@ -375,7 +432,36 @@ class Polynomial_Regression_Output(ttk.Frame):
         button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
         button1.pack()
 
+class KNNClassification_Output(ttk.Frame):
+    def __init__(self, parent, controller):
 
+        super().__init__(parent, style="Frame.TFrame")
+        self.controller = controller
+
+        label = ttk.Label(self, text="KNN Classification Output", background="lightblue")
+        label.pack(side="top", fill="x", pady=10)
+
+        self.accuracy_label = ttk.Label(self, text="")
+        self.accuracy_label.pack()
+
+        self.precision_label = ttk.Label(self, text="")
+        self.precision_label.pack()
+
+        self.recall_label = ttk.Label(self, text="")
+        self.recall_label.pack()
+
+        self.f1_label = ttk.Label(self, text="")
+        self.f1_label.pack()
+
+    def set_output(self, accuracy_score_, precision_score_, recall_score_, f1_score_):
+
+        self.accuracy_label.config(text=f'Accuracy Score: {accuracy_score_}', background="lightblue")
+        self.precision_label.config(text=f'Precision Score: {precision_score_}', background="lightblue")
+        self.recall_label.config(text=f'Recall Score: {recall_score_}', background="lightblue")
+        self.f1_label.config(text=f'F1 Score: {f1_score_}', background="lightblue")
+
+        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1.pack()
 
 if __name__ == "__main__":
 
