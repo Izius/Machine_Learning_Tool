@@ -9,6 +9,7 @@ from sklearn.preprocessing import StandardScaler, PolynomialFeatures
 from sklearn.metrics import precision_score, recall_score, f1_score, accuracy_score
 from sklearn.metrics import mean_absolute_error, mean_squared_error
 from PIL import Image, ImageTk
+import json
 
 
 class Machine_Learning_Tool(tk.Tk):
@@ -332,7 +333,6 @@ class Linear_Regression_Output(ttk.Frame):
         self.coefficient_labels = []
 
 
-
     def set_output(self, lin_intercept, lin_coefficients, mae, root):
 
         self.intercept_label.config(text=f'Intercept: {round(lin_intercept, 2)}')
@@ -345,8 +345,47 @@ class Linear_Regression_Output(ttk.Frame):
         self.mae_label.config(text=f'Mean Absolute Error: {round(mae, 2)}')
         self.root_label.config(text=f'Root Mean Squared Error: {round(root, 2)}')
 
-        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1 = ttk.Button(self, text='Export to txt file',
+                             command=lambda: self.export_to_txt(lin_intercept, lin_coefficients, mae, root))
         button1.pack()
+
+        button2 = ttk.Button(self, text='Export to JSON file',
+                             command=lambda: self.export_to_json(lin_intercept, lin_coefficients, mae, root))
+        button2.pack()
+
+        button3 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button3.pack()
+
+    def export_to_txt(self, lin_intercept, lin_coefficients, mae, root):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt")])
+
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(f'Intercept: {lin_intercept}\n')
+                file.write(f'Mean Absolute Error: {mae}\n')
+                file.write(f'Root Mean Squared Error: {root}\n')
+                for i, coef in enumerate(lin_coefficients):
+                    file.write(f'Coefficient {i + 1}: {coef}\n')
+
+                file.close()
+
+    def export_to_json(self, lin_intercept, lin_coefficients, mae, root):
+        file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                 filetypes=[("JSON files", "*.json")])
+
+        if file_path:
+            data = {
+                "Intercept": lin_intercept,
+                "Mean Absolute Error": mae,
+                "Root Mean Squared Error": root,
+            }
+            for i, coef in enumerate(lin_coefficients):
+                data[f'Coefficient {i + 1}'] = coef
+
+            with open(file_path, 'w') as file:
+                json.dump(data, file, indent=4)
+                file.close()
 
 
 class Logistic_Classification_Output(ttk.Frame):
@@ -387,8 +426,51 @@ class Logistic_Classification_Output(ttk.Frame):
         label5 = ttk.Label(self, text=f"F1 Score: {round(f1_score_, 2)}", background="lightblue")
         label5.pack()
 
-        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1 = ttk.Button(self, text='Export to txt file',
+                             command=lambda: self.export_to_txt(log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_))
         button1.pack()
+
+        button2 = ttk.Button(self, text='Export to JSON file',
+                             command=lambda: self.export_to_json(log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_))
+        button2.pack()
+
+        button3 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button3.pack()
+
+    def export_to_txt(self, log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt")])
+
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(f'Intercept: {log_intercept}\n')
+                file.write(f'Accuracy Score: {accuracy_score_}\n')
+                file.write(f'Precision Score: {precision_score_}\n')
+                file.write(f'Recall Score: {recall_score_}\n')
+                file.write(f'F1 Score: {f1_score_}\n')
+                for i, coef in enumerate(log_coefficients):
+                    file.write(f'Coefficient {i + 1}: {coef}\n')
+
+                file.close()
+
+    def export_to_json(self, log_intercept, log_coefficients, accuracy_score_, precision_score_, recall_score_, f1_score_):
+        file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                 filetypes=[("JSON files", "*.json")])
+
+        if file_path:
+            data = {
+                "Intercept": log_intercept,
+                "Accuracy Score": accuracy_score_,
+                "Precision Score": precision_score_,
+                "Recall Score": recall_score_,
+                "F1 Score": f1_score_,
+            }
+            for i, coef in enumerate(log_coefficients):
+                data[f'Coefficient {i + 1}'] = coef
+
+            with open(file_path, 'w') as file:
+                json.dump(data, file, indent=4)
+                file.close()
 
 
 class Polynomial_Regression_Output(ttk.Frame):
@@ -429,8 +511,45 @@ class Polynomial_Regression_Output(ttk.Frame):
         self.mae_label.config(text=f'Mean Absolute Error: {round(mae, 2)}', background="lightblue")
         self.root_label.config(text=f'Root Mean Squared Error: {round(root, 2)}', background="lightblue")
 
-        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1 = ttk.Button(self, text='Export to txt file',
+                                command=lambda: self.export_to_txt(intercepts, coefficients, mae, root, degree))
         button1.pack()
+
+        button2 = ttk.Button(self, text='Export to JSON file',
+                                command=lambda: self.export_to_json(intercepts, coefficients, mae, root, degree))
+        button2.pack()
+
+        button3 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button3.pack()
+
+    def export_to_txt(self, intercepts, coefficients, mae, root, degree):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt")])
+
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(f'Mean Absolute Error: {mae}\n')
+                file.write(f'Root Mean Squared Error: {root}\n')
+                for i, coef in enumerate(coefficients):
+                    file.write(f'Coefficient {i + 1}: {coef}\n')
+
+                file.close()
+
+    def export_to_json(self, intercepts, coefficients, mae, root, degree):
+        file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                 filetypes=[("JSON files", "*.json")])
+
+        if file_path:
+            data = {
+                "Mean Absolute Error": mae,
+                "Root Mean Squared Error": root,
+            }
+            for i, coef in enumerate(coefficients):
+                data[f'Coefficient {i + 1}'] = coef
+
+            with open(file_path, 'w') as file:
+                json.dump(data, file, indent=4)
+                file.close()
 
 class KNNClassification_Output(ttk.Frame):
     def __init__(self, parent, controller):
@@ -460,8 +579,45 @@ class KNNClassification_Output(ttk.Frame):
         self.recall_label.config(text=f'Recall Score: {round(recall_score_, 2)}', background="lightblue")
         self.f1_label.config(text=f'F1 Score: {round(f1_score_, 2)}', background="lightblue")
 
-        button1 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button1 = ttk.Button(self, text='Export to txt file',
+                                command=lambda: self.export_to_txt(accuracy_score_, precision_score_, recall_score_, f1_score_))
         button1.pack()
+
+        button2 = ttk.Button(self, text='Export to JSON file',
+                                command=lambda: self.export_to_json(accuracy_score_, precision_score_, recall_score_, f1_score_))
+        button2.pack()
+
+        button3 = ttk.Button(self, text="Go to Start Page", command=lambda: self.controller.show_frame("StartPage"))
+        button3.pack()
+
+    def export_to_txt(self, accuracy_score_, precision_score_, recall_score_, f1_score_):
+        file_path = filedialog.asksaveasfilename(defaultextension=".txt",
+                                                 filetypes=[("Text files", "*.txt")])
+
+        if file_path:
+            with open(file_path, 'w') as file:
+                file.write(f'Accuracy Score: {accuracy_score_}\n')
+                file.write(f'Precision Score: {precision_score_}\n')
+                file.write(f'Recall Score: {recall_score_}\n')
+                file.write(f'F1 Score: {f1_score_}\n')
+
+                file.close()
+
+    def export_to_json(self, accuracy_score_, precision_score_, recall_score_, f1_score_):
+        file_path = filedialog.asksaveasfilename(defaultextension=".json",
+                                                 filetypes=[("JSON files", "*.json")])
+
+        if file_path:
+            data = {
+                "Accuracy Score": accuracy_score_,
+                "Precision Score": precision_score_,
+                "Recall Score": recall_score_,
+                "F1 Score": f1_score_,
+            }
+
+            with open(file_path, 'w') as file:
+                json.dump(data, file, indent=4)
+                file.close()
 
 if __name__ == "__main__":
 
