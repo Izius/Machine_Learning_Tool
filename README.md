@@ -16,7 +16,7 @@ pip install pillow
 
 ## What is coming next
 
-I will constantly update the code and add new algorithms. Next on my list is implementing a way to export fitting results in a .json or .txt format. I will also constantly add new algorithms for example KNN, support vector machines, decission trees, clustering, principal component analysis and so on. 
+I will constantly update the code and add new algorithms. I will also constantly add new algorithms for example support vector machines, decission trees, clustering, principal component analysis and so on. 
 
 ## Short guide on how to use the application
 
