@@ -28,7 +28,7 @@ In the next slide we have for example linear regression page. Only input on this
 
 <img src="./images/Linear regression.png" alt="Alt text" width="500"/>
 
-After the algorithm does its job of splitting, training and fitting the data and also calculating important quantities for us, you will get the back evaluation metrics and coefficients of all features. In the future, the metrics and coefficients will be able to be saved if needed. 
+After the algorithm does its job of splitting, training and fitting the data and also calculating important quantities for us, you will get the back evaluation metrics and coefficients of all features. Right now is possible to save coefficents or metrics in json or txt format. 
 
 <img src="./images/Output.png" alt="Alt text" width="500"/>
 
